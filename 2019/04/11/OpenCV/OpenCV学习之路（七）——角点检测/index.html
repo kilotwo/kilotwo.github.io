@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/322.ico?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/161.ico?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="角点检测（Corner Detection）是计算机视觉中用来获得图像特征的一种方法，广泛应用于运动检测、视频追踪、目标识别等领域中，也称特征点检测。  一、兴趣点与角点对于角点，到目前为止还没有明确的数学定义。但是你可以认为角点就是极值点，即在某方面属性特别突出的点。一般的角点检测都是对有具体定义的、或者是能够具体检测出来的兴趣点的检测。这意味着兴趣点可以是角点，是在某些属性上强度最大或者最小">
+<meta name="keywords" content="自动化，计算机视觉，算法，Android，QT5，linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenCV学习之路(七)——角点检测">
+<meta property="og:url" content="https://kilotwo.github.io/2019/04/11/OpenCV/OpenCV学习之路（七）——角点检测/index.html">
+<meta property="og:site_name" content="南七忆梦_">
+<meta property="og:description" content="角点检测（Corner Detection）是计算机视觉中用来获得图像特征的一种方法，广泛应用于运动检测、视频追踪、目标识别等领域中，也称特征点检测。  一、兴趣点与角点对于角点，到目前为止还没有明确的数学定义。但是你可以认为角点就是极值点，即在某方面属性特别突出的点。一般的角点检测都是对有具体定义的、或者是能够具体检测出来的兴趣点的检测。这意味着兴趣点可以是角点，是在某些属性上强度最大或者最小">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-04-12T03:29:26.472Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OpenCV学习之路(七)——角点检测">
+<meta name="twitter:description" content="角点检测（Corner Detection）是计算机视觉中用来获得图像特征的一种方法，广泛应用于运动检测、视频追踪、目标识别等领域中，也称特征点检测。  一、兴趣点与角点对于角点，到目前为止还没有明确的数学定义。但是你可以认为角点就是极值点，即在某方面属性特别突出的点。一般的角点检测都是对有具体定义的、或者是能够具体检测出来的兴趣点的检测。这意味着兴趣点可以是角点，是在某些属性上强度最大或者最小">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://kilotwo.github.io/2019/04/11/OpenCV/OpenCV学习之路（七）——角点检测/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>OpenCV学习之路(七)——角点检测 | 南七忆梦_</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">南七忆梦_</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/kilotwo" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://kilotwo.github.io/2019/04/11/OpenCV/OpenCV学习之路（七）——角点检测/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zero、">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="南七忆梦_">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">OpenCV学习之路(七)——角点检测
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-11 12:00:02" itemprop="dateCreated datePublished" datetime="2019-04-11T12:00:02+08:00">2019-04-11</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-04-12 11:29:26" itemprop="dateModified" datetime="2019-04-12T11:29:26+08:00">2019-04-12</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/OpenCV/" itemprop="url" rel="index"><span itemprop="name">OpenCV</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/04/11/OpenCV/OpenCV学习之路（七）——角点检测/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/04/11/OpenCV/OpenCV学习之路（七）——角点检测/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">6k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">5 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>角点检测（Corner Detection）是计算机视觉中用来获得图像特征的一种方法，广泛应用于运动检测、视频追踪、目标识别等领域中，也称特征点检测。</p>
+</blockquote>
+<h2 id="一、兴趣点与角点"><a href="#一、兴趣点与角点" class="headerlink" title="一、兴趣点与角点"></a>一、兴趣点与角点</h2><p>对于角点，到目前为止还没有明确的数学定义。但是你可以认为角点就是极值点，即在某方面属性特别突出的点。一般的角点检测都是对有具体定义的、或者是能够具体检测出来的兴趣点的检测。这意味着兴趣点可以是角点，是在某些属性上强度最大或者最小的孤立点、线段的终点，或者是曲线上局部曲率最大的点。<br>通俗的来说，在一副图像中，我们可以认为角点是物体轮廓线的连接点（见图1），当拍摄视角变化的时候，这些特征点仍能很好地保持稳定的属性。<br>图1<br>角点通常被定义为两条边的交点，角点的局部领域应该具有两个不同区域的不同方向的边界。实际应用中，大多数角点检测方法检测的是拥有特定特征的图像点，不仅仅是“角点”。这些特征点在图像中具有具体的坐标，并具有某些数学特征，如局部最大或最小灰度、某些梯度特征。角点在保留图像图形重要特征的同时，可以有效地减少信息的数据量，使其信息的含量很高，有效地提高了计算的速度，有利于图像的可靠匹配，使得实时处理成为可能。</p>
+<p>图像特征类型可以被分为如下三种：</p>
+<ul>
+<li>边缘</li>
+<li>角点（感兴趣关键点）</li>
+<li>斑点（Blobs）（感兴趣区域）</li>
+</ul>
+<p>其中，角点是个很特殊的存在。如果某一点在任意方向的一个微小变动都会引起灰度很大变化，那么就称为角点。角点位于两条边缘的交点处，代表了两个边缘变化的方向上的点，所以它们是可以精确定位的二维特征，甚至可以达到亚精度的精度。<br>关于角点的具体描述可以有如下几种：</p>
+<ul>
+<li>一阶导师（即灰度的梯度）的局部最大所对应的像素点。</li>
+<li>两条即两条以上边缘交点。</li>
+<li>图像中梯度值和梯度方向的变化速率都很高的点。</li>
+<li>角点处的一阶导数最大，二阶导数为零，它指示了物体边缘变化不连续的方向。</li>
+</ul>
+<h2 id="二、角点检测"><a href="#二、角点检测" class="headerlink" title="二、角点检测"></a>二、角点检测</h2><p>在当前的图像处理领域，角点检测算法可以归纳为以下三类</p>
+<ul>
+<li>基于灰度图像的角点检测</li>
+<li>基于二值图像的角点检测</li>
+<li>基于轮廓曲线的角点检测<br>基于灰度图像的角点检测又可分为基于梯度、基于模版和基于模版梯度组合三类方法。基于模版的方法主要考虑像素领域点的灰度变化，即图像亮度的变化，将于邻点亮度对比足够大的点定义为角点。常见的基于模版的角点检测算法有Harris角点检测算法，KLT角点检测算法等。</li>
+</ul>
+<h2 id="三、Harris角点检测"><a href="#三、Harris角点检测" class="headerlink" title="三、Harris角点检测"></a>三、Harris角点检测</h2><p>Harris角点检测是一种直接基于灰度图像的角点提取算法，稳定性高，尤其对L型角点检测精度很高。但由于采用了高斯滤波，运算速度相对较慢，角点信息有丢失和位置偏移的现象。<br>图2</p>
+<p>角点检测最原始的想法就是取某个像素的一个邻域窗口，当这个窗口在各个方向上进行小范围移动时，观察窗口内平均的像素灰度值的变化（即，E(u,v)，Window-averaged change of intensity）。从上图可知，我们可以将一幅图像大致分为三个区域（‘flat’，‘edge’，‘corner’），这三个区域变化是不一样的。<br>A. 窗口图像平坦 —————E的变化不大</p>
+<p>B.窗口图像是一条边 ————1.沿边滑动E的变化不大      2.垂直于边滑动，E的变化会很大</p>
+<p>C.窗口图像为一个角点 ————窗口图像沿任何方向移动，E的值变化都会很大<br>具体原理可参考下面两篇<br><a href="https://blog.csdn.net/linqianbi/article/details/78930239" target="_blank" rel="noopener">https://blog.csdn.net/linqianbi/article/details/78930239</a><br><a href="https://blog.csdn.net/pbymw8iwm/article/details/82624898" target="_blank" rel="noopener">https://blog.csdn.net/pbymw8iwm/article/details/82624898</a></p>
+<h2 id="四、OpenCV实现Harris角点检测"><a href="#四、OpenCV实现Harris角点检测" class="headerlink" title="四、OpenCV实现Harris角点检测"></a>四、OpenCV实现Harris角点检测</h2><p>OpenCV中<code>cornerHarris</code>函数可用于检测图像的Harris角点。 <code>cornerHarris</code>函数名参数的说明：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">void cornerHarris( InputArray src,  //输入8bit 单通道灰度Mat矩阵</span><br><span class="line">                    OutputArray dst, //用于保存Harris角点检测结果,32位单通道,大小与src相同</span><br><span class="line">                    int blockSize,   //滑块窗口的尺寸</span><br><span class="line">                    int ksize,       //Sobel边缘检测滤波器大小</span><br><span class="line">                    double k,        //Harries中间参数,经验值0.04~0.06</span><br><span class="line">                    int borderType=BORDER_DEFAULT   //插值类型</span><br><span class="line">                    );</span><br></pre></td></tr></table></figure></p>
+<p>完整代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;opencv2/core/core.hpp&gt;</span><br><span class="line">#include &lt;opencv2/highgui/highgui.hpp&gt;</span><br><span class="line">#include &lt;opencv2/imgproc/imgproc.hpp&gt;</span><br><span class="line">#include &lt;iostream&gt;</span><br><span class="line"></span><br><span class="line">using namespace cv;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Mat image;</span><br><span class="line">Mat imageGray;</span><br><span class="line">int thresh = 200;</span><br><span class="line">int MaxThresh = 255;</span><br><span class="line"></span><br><span class="line">void Trackbar(int, void*);  //阈值控制</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	image = imread(&quot;1.jpg&quot;);</span><br><span class="line">	cvtColor(image, imageGray, CV_RGB2GRAY);</span><br><span class="line">	GaussianBlur(imageGray, imageGray, Size(5, 5), 1); // 滤波</span><br><span class="line">	namedWindow(&quot;Corner&quot;);</span><br><span class="line">	createTrackbar(&quot;threshold：&quot;, &quot;Corner&quot;, &amp;thresh, MaxThresh, Trackbar);</span><br><span class="line">	imshow(&quot;Corner&quot;, image);</span><br><span class="line">	Trackbar(0, 0);</span><br><span class="line">	waitKey();</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void Trackbar(int, void*)</span><br><span class="line">&#123;</span><br><span class="line">	Mat dst, dst8u, dstshow, imageSource;</span><br><span class="line">	dst = Mat::zeros(image.size(), CV_32FC1);</span><br><span class="line">	imageSource = image.clone();</span><br><span class="line">	cornerHarris(imageGray, dst, 3, 3, 0.04, BORDER_DEFAULT);</span><br><span class="line">	normalize(dst, dst8u, 0, 255, CV_MINMAX);  //归一化</span><br><span class="line">	convertScaleAbs(dst8u, dstshow);</span><br><span class="line">	imshow(&quot;dst&quot;, dstshow);  //dst显示</span><br><span class="line">	for (int i = 0;i&lt;image.rows;i++)</span><br><span class="line">	&#123;</span><br><span class="line">		for (int j = 0;j&lt;image.cols;j++)</span><br><span class="line">		&#123;</span><br><span class="line">			if (dstshow.at&lt;uchar&gt;(i, j)&gt;thresh)  //阈值判断</span><br><span class="line">			&#123;</span><br><span class="line">				circle(imageSource, Point(j, i), 2, Scalar(0, 0, 255), 2); //标注角点</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	imshow(&quot;Corner&quot;, imageSource);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注：<br>1.convertScaleAbs函数是OpenCV中的函数，使用线性变换转换输入数组元素成8位无符号整型。</p>
+<p>2.cvCircle(CvArr* img, CvPoint center, int radius, CvScalar color, int thickness=1, int lineType=8, int shift=0)</p>
+<p>img为源图像指针</p>
+<p>center为画圆的圆心坐标</p>
+<p>radius为圆的半径</p>
+<p>color为设定圆的颜色，规则根据B（蓝）G（绿）R（红）</p>
+<p>thickness 如果是正数，表示组成圆的线条的粗细程度。否则，表示圆是否被填充</p>
+<p>line_type 线条的类型。默认是8</p>
+<p>shift 圆心坐标点和半径值的小数点位数<br>效果图：</p>
+<p>图3</p>
+<h2 id="五、OpenCV实现Harris角点检测"><a href="#五、OpenCV实现Harris角点检测" class="headerlink" title="五、OpenCV实现Harris角点检测"></a>五、OpenCV实现Harris角点检测</h2><p>OpenCV 提供了函数： cv2.goodFeaturesToTrack()。这个函数可以帮我们使用 Shi-Tomasi 方法获取图像中 N 个最好的角点（也可以通过改变参数来使用 Harris 角点检测算法）。通常情况下，输入的应该是灰度图像。然后确定你想要检测到的角点数目。再设置角点的质量水平， 0到 1 之间。它代表了角点的最低质量，低于这个数的所有角点都会被忽略。最后在设置两个角点之间的最短欧式距离。根据这些信息，函数就能在图像上找到角点。所有低于质量水平的角点都会被忽略,然后再把合格角点按角点质量进行降序排列。函数会采用角点质量最高的那个角点（排序后的第一个），然后将它附近（最小距离之内）的角点删掉。按着这样的方式最后返回 N 个最佳角点。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">//goodFeaturesToTrack有比cornerHarries更多的控制参数,函数原型:</span><br><span class="line"> </span><br><span class="line">void goodFeaturesToTrack( InputArray image, OutputArray corners,</span><br><span class="line">                                    int maxCorners, double qualityLevel, double minDistance,</span><br><span class="line">                                    InputArray mask=noArray(), int blockSize=3,</span><br><span class="line">                                    bool useHarrisDetector=false, double k=0.04);</span><br><span class="line"> </span><br><span class="line">/*第一个参数image：8位或32位单通道灰度图像;</span><br><span class="line">  第二个参数corners: 位置点向量,保存的是检测到角点的坐标;</span><br><span class="line">  第三个参数maxCorners: 定义可以检测到的角点的数量的最大值;</span><br><span class="line">  第四个参数qualityLevel: 检测到的角点的质量等级,角点特征值小于qualityLevel*最大特征</span><br><span class="line">  值的点将被舍弃;</span><br><span class="line">  第五个参数minDistance: 两个角点间最小间距,以像素为单位;</span><br><span class="line">  第六个参数mask: 指定检测区域,若检测整幅图像,mask置为空Mat();</span><br><span class="line">  第七个参数blockSize: 计算协方差矩阵时窗口大小;</span><br><span class="line">  第八个参数useHarrisDector: 是否使用Harris角点检测,为false,则使用Shi-Tomasi算子;</span><br><span class="line">  第九个参数K: 留给Harris角点检测算子用的中间参数,一般取经验值0.04~0.06.第8个参数为false时,改参数不起作用;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;core/core.hpp&quot;  </span><br><span class="line">#include &quot;highgui/highgui.hpp&quot; </span><br><span class="line">#include &quot;imgproc/imgproc.hpp&quot;</span><br><span class="line"> </span><br><span class="line">using namespace cv;   </span><br><span class="line"> </span><br><span class="line">Mat image;</span><br><span class="line">Mat imageGray;</span><br><span class="line">int thresh=5;   //角点个数控制</span><br><span class="line">int MaxThresh=255;</span><br><span class="line"> </span><br><span class="line">void Trackbar(int,void*);  </span><br><span class="line"> </span><br><span class="line">int main(int argc,char*argv[])  </span><br><span class="line">&#123;  </span><br><span class="line">	image=imread(argv[1]);</span><br><span class="line">	cvtColor(image,imageGray,CV_RGB2GRAY);</span><br><span class="line">	GaussianBlur(imageGray,imageGray,Size(5,5),1); // 滤波</span><br><span class="line">	namedWindow(&quot;Corner Detected&quot;);</span><br><span class="line">	createTrackbar(&quot;threshold：&quot;,&quot;Corner Detected&quot;,&amp;thresh,MaxThresh,Trackbar);</span><br><span class="line">	imshow(&quot;Corner Detected&quot;,image);</span><br><span class="line">	Trackbar(0,0);</span><br><span class="line">	waitKey();</span><br><span class="line">	return 0;</span><br><span class="line">&#125;  </span><br><span class="line"> </span><br><span class="line">void Trackbar(int,void*)</span><br><span class="line">&#123;</span><br><span class="line">	Mat dst,imageSource;</span><br><span class="line">	dst=Mat::zeros(image.size(),CV_32FC1);  </span><br><span class="line">	imageSource=image.clone();</span><br><span class="line">	vector&lt;Point2f&gt; corners;  </span><br><span class="line">	goodFeaturesToTrack(imageGray,corners,thresh,0.01,10,Mat());</span><br><span class="line">	for(int i=0;i&lt;corners.size();i++)</span><br><span class="line">	&#123;</span><br><span class="line">		circle(imageSource,corners[i],2,Scalar(0,0,255),2);</span><br><span class="line">	&#125;</span><br><span class="line">	imshow(&quot;Corner Detected&quot;,imageSource); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>goodFeaturesToTrack相比cornerHarris，增加了检测的复杂度，同时也可以更好的控制检测到的角点的特性，比如角点个数，角点间最小间距等。设置检测点数为11时，只有特征值最大的前11个角点被检测出来,继续增大检测点数的值，所有角点都被检测出来</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+<div>
+    
+        
+<div class="my_post_copyright">
+  <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+  
+  <!-- JS库 sweetalert 可修改路径 -->
+  <script type="text/javascript" src="http://jslibs.wuxubj.cn/sweetalert_mini/jquery-1.7.1.min.js"></script>
+  <script src="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="http://jslibs.wuxubj.cn/sweetalert_mini/sweetalert.mini.css">
+
+  <p><span>本文标题:</span>OpenCV学习之路(七)——角点检测</p>
+  <p><span>文章作者:</span>Zero、</p>
+  <p><span>发布时间:</span>2019年04月11日 - 12:00:02</p>
+  <p><span>最后更新:</span>2019年04月12日 - 11:29:26</p>
+  <p><span>原始链接:</span><a href="/2019/04/11/OpenCV/OpenCV学习之路（七）——角点检测/" title="OpenCV学习之路(七)——角点检测">https://kilotwo.github.io/2019/04/11/OpenCV/OpenCV学习之路（七）——角点检测/</a>
+    <span class="copy-path" title="点击复制文章链接"><i class="fa fa-clipboard" data-clipboard-text="https://kilotwo.github.io/2019/04/11/OpenCV/OpenCV学习之路（七）——角点检测/" aria-label="复制成功！"></i></span>
+  </p>
+  <p><span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">署名-非商业性使用-禁止演绎 4.0 国际</a> 转载请保留原文链接及作者。</p>  
+</div>
+<script> 
+    var clipboard = new Clipboard('.fa-clipboard');
+    clipboard.on('success', $(function(){
+      $(".fa-clipboard").click(function(){
+        swal({   
+          title: "",   
+          text: '复制成功',   
+          html: false,
+          timer: 500,   
+          showConfirmButton: false
+        });
+      });
+    }));  
+</script>
+
+    
+</div>
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/04/11/OpenCV/OpenCV学习之路（九）——CAMShift视频对象跟踪/" rel="next" title="OpenCV学习之路(九)——CAMShift视频对象跟踪">
+                <i class="fa fa-chevron-left"></i> OpenCV学习之路(九)——CAMShift视频对象跟踪
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/11/OpenCV/OpenCV学习之路（一）——图像处理基本知识总结/" rel="prev" title="OpenCV学习之路(一)——图像处理基本知识总结">
+                OpenCV学习之路(一)——图像处理基本知识总结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Zero、">
+            
+              <p class="site-author-name" itemprop="name">Zero、</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives">
+                
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/kilotwo" title="GitHub &rarr; https://github.com/kilotwo" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、兴趣点与角点"><span class="nav-number">1.</span> <span class="nav-text">一、兴趣点与角点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、角点检测"><span class="nav-number">2.</span> <span class="nav-text">二、角点检测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、Harris角点检测"><span class="nav-number">3.</span> <span class="nav-text">三、Harris角点检测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、OpenCV实现Harris角点检测"><span class="nav-number">4.</span> <span class="nav-text">四、OpenCV实现Harris角点检测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、OpenCV实现Harris角点检测"><span class="nav-number">5.</span> <span class="nav-text">五、OpenCV实现Harris角点检测</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zero、</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">39k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+    <span title="站点阅读时长">36 分钟</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+  
+  <script color="0,0,0" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: ture,
+    appId: 'jNfDrH5MBW35Ejng6bgh05G8-gzGzoHsz',
+    appKey: 'YqVyGC0hIm6TEhKbgktVrkcN',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: '' || 'zh-cn'
+  });
+</script>
+
+
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/love.js"></script>
+
+</body>
+</html>

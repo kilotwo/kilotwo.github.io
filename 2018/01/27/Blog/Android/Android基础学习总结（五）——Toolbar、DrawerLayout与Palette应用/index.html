@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/322.ico?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/161.ico?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="##引言  对于已经被不大好用的Actionbar折磨的开发者来说，Toolbar的出现确实是一个好消息，Toolbar是应用的内容的标准工具栏，可以说是Actionbar的升级版，两者不是独立关系，要使用Toolbar还是得跟ActionBar有关系的。相比Actionbar Toolbar最明显的一点就是变得很自由，可随处放置，具体的使用方法和Actionbar很类似。  ##什么是Toolb">
+<meta name="keywords" content="自动化，计算机视觉，算法，Android，QT5，linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="南七忆梦_">
+<meta property="og:url" content="https://kilotwo.github.io/2018/01/27/Blog/Android/Android基础学习总结（五）——Toolbar、DrawerLayout与Palette应用/index.html">
+<meta property="og:site_name" content="南七忆梦_">
+<meta property="og:description" content="##引言  对于已经被不大好用的Actionbar折磨的开发者来说，Toolbar的出现确实是一个好消息，Toolbar是应用的内容的标准工具栏，可以说是Actionbar的升级版，两者不是独立关系，要使用Toolbar还是得跟ActionBar有关系的。相比Actionbar Toolbar最明显的一点就是变得很自由，可随处放置，具体的使用方法和Actionbar很类似。  ##什么是Toolb">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-01-27T15:08:06.902Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="南七忆梦_">
+<meta name="twitter:description" content="##引言  对于已经被不大好用的Actionbar折磨的开发者来说，Toolbar的出现确实是一个好消息，Toolbar是应用的内容的标准工具栏，可以说是Actionbar的升级版，两者不是独立关系，要使用Toolbar还是得跟ActionBar有关系的。相比Actionbar Toolbar最明显的一点就是变得很自由，可随处放置，具体的使用方法和Actionbar很类似。  ##什么是Toolb">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://kilotwo.github.io/2018/01/27/Blog/Android/Android基础学习总结（五）——Toolbar、DrawerLayout与Palette应用/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title> | 南七忆梦_</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">南七忆梦_</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/kilotwo" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://kilotwo.github.io/2018/01/27/Blog/Android/Android基础学习总结（五）——Toolbar、DrawerLayout与Palette应用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zero、">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="南七忆梦_">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-01-27 20:27:58 / 修改时间：23:08:06" itemprop="dateCreated datePublished" datetime="2018-01-27T20:27:58+08:00">2018-01-27</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2018/01/27/Blog/Android/Android基础学习总结（五）——Toolbar、DrawerLayout与Palette应用/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2018/01/27/Blog/Android/Android基础学习总结（五）——Toolbar、DrawerLayout与Palette应用/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">13k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">12 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>##引言</p>
+<blockquote>
+<p>对于已经被不大好用的Actionbar折磨的开发者来说，Toolbar的出现确实是一个好消息，Toolbar是应用的内容的标准工具栏，可以说是Actionbar的升级版，两者不是独立关系，要使用Toolbar还是得跟ActionBar有关系的。相比Actionbar Toolbar最明显的一点就是变得很自由，可随处放置，具体的使用方法和Actionbar很类似。</p>
+</blockquote>
+<p>##什么是Toolbar<br>图片1<br>一般情况工具栏可以包含以下可选的元素：</p>
+<ul>
+<li>A navigation button（导航按钮）。这里可能是向上箭头，导航菜单，关闭，折叠，完成或应用程序中选择的其他图标。这个按钮应始终用于访问工具栏指定内容的容器内的其他导航目标，或者离开当前的上下文。</li>
+<li>A branded logo image（标志性的logo图片）。</li>
+<li>A title and subtitle（标题或者子标题）。</li>
+<li>One or more custom views（或多个视图）。<br>  <em>An action menu
+  </em>(动作菜单)。</li>
+</ul>
+<p>##引入Toolbar<br>Android Api中给我们提供了多个版本的Toolbar给我们使用，包括3.0引入的ActionBar和v21中的Toolbar，但是为了达到应用体验的一致性以及如今纷繁复杂的android平台差异化的情况下我们选择<code>android.support.v7.widget.Toolbar</code>的Toolbar来使用。</p>
+<ul>
+<li><p>添加android.support.v7.widget.Toolbar的依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">    compile &apos;com.android.support:appcompat-v7:25.3.1&apos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>确保Activity继承自AppCompatActivity:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public class MyActivity extends AppCompatActivity &#123;</span><br><span class="line">// ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>接下来为了显示Toolbar控件，先要将在style里得先把Actionbar去掉</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;resources&gt;</span><br><span class="line">    &lt;!-- Base application theme. --&gt;</span><br><span class="line">    &lt;style name=&quot;AppTheme&quot; parent=&quot;Theme.AppCompat.Light.NoActionBar&quot;&gt;</span><br><span class="line">        &lt;!-- Customize your theme here. --&gt;</span><br><span class="line">        &lt;item name=&quot;colorPrimary&quot;&gt;@color/colorPrimary&lt;/item&gt;</span><br><span class="line">        &lt;item name=&quot;colorPrimaryDark&quot;&gt;@color/colorPrimaryDark&lt;/item&gt;</span><br><span class="line">        &lt;item name=&quot;colorAccent&quot;&gt;@color/colorAccent&lt;/item&gt;</span><br><span class="line">    &lt;/style&gt;</span><br><span class="line">&lt;/resources&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>图2 设置属性的图</p>
+<ul>
+<li>接着我们写一个mytoolbar.xml，引入Toolbar控件，这么写的目的是方便多次调用，我们可以在其他布局中用include引用此布局(Material Design 规范建议应用栏具有 4 dp 的elevation)：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;android.support.v7.widget.Toolbar</span><br><span class="line">   android:id=&quot;@+id/my_toolbar&quot;</span><br><span class="line">   android:layout_width=&quot;match_parent&quot;</span><br><span class="line">   android:layout_height=&quot;?attr/actionBarSize&quot;</span><br><span class="line">   android:background=&quot;?attr/colorPrimary&quot;</span><br><span class="line">   android:elevation=&quot;4dp&quot;</span><br><span class="line">   android:theme=&quot;@style/ThemeOverlay.AppCompat.ActionBar&quot;</span><br><span class="line">   app:popupTheme=&quot;@style/ThemeOverlay.AppCompat.Light&quot;/&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p><em>注意：</em><br>1.正是由于每个布局文件都使用xmlns:android来指定一个命名空间，因此我们使用android:id这样的写法，那么这里指定了xmlns:app，就可以使用app:attribute这样的写法了，这么用的原因就是Material Design是在Android5.0系统才出现的，而很多相关属性在之前的系统不存在，为了能够兼容老系统，我们就不能用android:attribute这样写。<br>2.在AndroidManifest.xml中增加android:label属性，用来指定在Toolbar中显示的内容，如果未指定的话会默认使用应用名称</p>
+<p>##使用Toolbar<br>在主界面布局用include引用mytoolbar.xml中的Toolbar，在主界面布局中我们用DrawerLayout来完成侧滑的效果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">&lt;android.support.v4.widget.DrawerLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    xmlns:tools=&quot;http://schemas.android.com/tools&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;match_parent&quot;</span><br><span class="line">    tools:context=&quot;.MainActivity&quot;</span><br><span class="line">    android:fitsSystemWindows=&quot;true&quot;</span><br><span class="line">    android:id=&quot;@+id/id_drawerlayout&quot;</span><br><span class="line">    &gt;</span><br><span class="line">      &lt;!--主界面--&gt;</span><br><span class="line">        &lt;LinearLayout</span><br><span class="line">                android:layout_width=&quot;match_parent&quot;</span><br><span class="line">                android:layout_height=&quot;match_parent&quot;</span><br><span class="line">                android:orientation=&quot;vertical&quot;&gt;</span><br><span class="line">          &lt;!--包括Toolbar--&gt;  </span><br><span class="line">        &lt;include layout=&quot;@layout/mytoolbar&quot; /&gt;</span><br><span class="line">        </span><br><span class="line">        &lt;TextView</span><br><span class="line">              android:layout_width=&quot;match_parent&quot;</span><br><span class="line">              android:layout_height=&quot;match_parent&quot;</span><br><span class="line">              android:gravity=&quot;center&quot;</span><br><span class="line">              android:text=&quot;主内容界面&quot;</span><br><span class="line">              android:textColor=&quot;@android:color/white&quot;/&gt;</span><br><span class="line">         &lt;/LinearLayout&gt;</span><br><span class="line">    </span><br><span class="line">      &lt;!--侧滑菜单界面--&gt;</span><br><span class="line">      &lt;LinearLayout</span><br><span class="line">              android:id=&quot;@+id/ll_tabs&quot;</span><br><span class="line">              android:layout_width=&quot;match_parent&quot;</span><br><span class="line">              android:layout_height=&quot;match_parent&quot;</span><br><span class="line">              android:background=&quot;@android:color/white&quot;</span><br><span class="line">              android:orientation=&quot;vertical&quot;</span><br><span class="line">              android:layout_gravity=&quot;start&quot;&gt;</span><br><span class="line">          &lt;ImageView</span><br><span class="line">              android:layout_width=&quot;match_parent&quot;</span><br><span class="line">              android:layout_height=&quot;150dp&quot;</span><br><span class="line">              android:background=&quot;@drawable/back&quot;/&gt;</span><br><span class="line">          &lt;RadioGroup</span><br><span class="line">              android:layout_width=&quot;match_parent&quot;</span><br><span class="line">              android:layout_height=&quot;match_parent&quot;</span><br><span class="line">              &gt;</span><br><span class="line">           &lt;RadioButton</span><br><span class="line">              android:text=&quot;test1&quot;</span><br><span class="line">              android:layout_width=&quot;match_parent&quot;</span><br><span class="line">              android:layout_height=&quot;match_parent&quot; /&gt;</span><br><span class="line">          &lt;/RadioGroup&gt;</span><br><span class="line">      &lt;/LinearLayout&gt;</span><br><span class="line">&lt;/android.support.v4.widget.DrawerLayout&gt;</span><br></pre></td></tr></table></figure></p>
+<p>先直接贴上最终Java代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">public class MainActivity extends AppCompatActivity &#123;</span><br><span class="line">        private DrawerLayout drawerLayout;</span><br><span class="line">        private ActionBarDrawerToggle mDrawerToggle;</span><br><span class="line">    @Override</span><br><span class="line">   	protected void onCreate(Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);</span><br><span class="line">        setSupportActionBar(toolbar);  	//传入toolbar</span><br><span class="line">        getSupportActionBar().setDisplayHomeAsUpEnabled(true);</span><br><span class="line">         drawerLayout = (DrawerLayout) findViewById(R.id.id_drawerlayout);</span><br><span class="line">        mDrawerToggle= new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open,R.string.close);</span><br><span class="line">        mDrawerToggle.syncState();</span><br><span class="line">        drawerLayout.setDrawerListener(mDrawerToggle);</span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    public void onBackPressed() &#123;</span><br><span class="line">        //返回按钮的监听</span><br><span class="line">        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.id_drawerlayout);</span><br><span class="line">        if (drawer.isDrawerOpen(GravityCompat.START)) &#123;</span><br><span class="line">            drawer.closeDrawer(GravityCompat.START);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            super.onBackPressed();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    public boolean onCreateOptionsMenu(Menu menu)</span><br><span class="line">    &#123;</span><br><span class="line">        // Inflate the menu; this adds items to the action bar if it is present.</span><br><span class="line">        getMenuInflater().inflate(R.menu.main, menu);</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    public boolean onOptionsItemSelected(MenuItem item) &#123;</span><br><span class="line">        switch (item.getItemId())</span><br><span class="line">        &#123;</span><br><span class="line">            case R.id.search:</span><br><span class="line">                Toast.makeText(this,&quot;search&quot;,Toast.LENGTH_SHORT).show();</span><br><span class="line">                break;</span><br><span class="line">            case R.id.settings:</span><br><span class="line">                Toast.makeText(this,&quot;setting&quot;,Toast.LENGTH_LONG).show();</span><br><span class="line">                break;</span><br><span class="line">            case R.id.share:</span><br><span class="line">                Toast.makeText(this,&quot;share&quot;,Toast.LENGTH_SHORT).show();</span><br><span class="line">                break;</span><br><span class="line">            default:</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">            return  true;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>不难理解，在onCreateOptionsMenu()方法中加载进来toolbar.xml，然后在onOptionsItemSelected()里面处理菜单按钮的点击事件~</p>
+<p>##自定义ToolBar<br>为了增加功能，我们可以创建一个menu菜单，包含几个功能按键到ToolBar里面丰富一下，menu的布局文件如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;menu</span><br><span class="line">    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;</span><br><span class="line">    xmlns:tools=&quot;http://schemas.android.com/tools&quot;&gt;</span><br><span class="line">    &lt;item</span><br><span class="line">        android:id=&quot;@+id/search&quot;</span><br><span class="line">        android:orderInCategory=&quot;80&quot;</span><br><span class="line">        android:title=&quot;搜索&quot;</span><br><span class="line">        app:actionViewClass=&quot;android.support.v7.widget.SearchView&quot;</span><br><span class="line">        app:showAsAction=&quot;ifRoom&quot;/&gt;</span><br><span class="line">    &lt;item</span><br><span class="line">        android:id=&quot;@+id/share&quot;</span><br><span class="line">        android:orderInCategory=&quot;90&quot;</span><br><span class="line">        android:title=&quot;分享&quot;</span><br><span class="line">        app:actionProviderClass=&quot;android.support.v7.widget.ShareActionProvider&quot;</span><br><span class="line">        app:showAsAction=&quot;ifRoom&quot;/&gt;</span><br><span class="line">    &lt;item</span><br><span class="line">        android:id=&quot;@+id/settings&quot;</span><br><span class="line">        android:orderInCategory=&quot;100&quot;</span><br><span class="line">        android:title=&quot;设置&quot;</span><br><span class="line">        app:showAsAction=&quot;never&quot;/&gt;</span><br><span class="line">&lt;/menu&gt;</span><br></pre></td></tr></table></figure></p>
+<p>###注意：<br>这里item标签定义菜单按钮，icon指定图标，title指定按钮文字，要注意的主要是</p>
+<ul>
+<li>app:actionViewClass:ShareActionProvider，功能是能够允许你的app分享数据到其他app；</li>
+<li><p>app:actionViewClass=”android.support.v7.widget.SearchView”，功能是出现可自动伸缩搜索框类似下面这种：图1<br>如果你需要配置这个action，在你的Activity的重写方法onCreateOptionsMenu()。你可以通过 getActionView()<br>拿到view的引用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">   @Override</span><br><span class="line">    public boolean onCreateOptionsMenu(Menu menu) &#123;</span><br><span class="line">    getMenuInflater().inflate(R.menu.main_activity_actions, menu);</span><br><span class="line"></span><br><span class="line">    MenuItem searchItem = menu.findItem(R.id.action_search);</span><br><span class="line">    SearchView searchView =(SearchView) MenuItemCompat.getActionView(searchItem);</span><br><span class="line"></span><br><span class="line">    // Configure the search info and add any event listeners...</span><br><span class="line">     return super.onCreateOptionsMenu(menu);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>app:showAsAction 这个用来指定按钮的显示位置:always表示永远显示在Toolbar中，如果屏幕不够就不显示；ifRoom表示屏幕空间足够的情况下显示在Toolbar中，不够就显示在菜单当中；never则永远显示在菜单中。注意,Toolbar中的actio按钮只会显示图标，菜单中的action按钮智慧显示文字。</p>
+</li>
+</ul>
+<p>##DrawerLayout滑动菜单<br><em>所谓滑动菜单就是将一些菜单选项隐藏起来，然后可以通过滑动的方式将菜单显示出来，这样既节约了屏幕空间，也实现了很好动画效果，是MD中推荐的方法。谷歌提供了一种DrawerLayout控件，借助这个控件，实现滑动菜单简单方便。</em></p>
+<p>##DrawerLayout的使用<br>DrawerLayout是一个布局，在一个布局中允许放入两个直接子控件，第一个子控件就是主屏幕的主要内容，第二个子控件是滑动菜单中显示的内容，平时是隐藏的，滑动时显示出来。因此在使用时，我们可以用DrawerLayout来“包住”两个子布局，具体代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">&lt;android.support.v4.widget.DrawerLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</span><br><span class="line">    xmlns:tools=&quot;http://schemas.android.com/tools&quot;</span><br><span class="line">    android:layout_width=&quot;match_parent&quot;</span><br><span class="line">    android:layout_height=&quot;match_parent&quot;</span><br><span class="line">    tools:context=&quot;.MainActivity&quot;</span><br><span class="line">    android:fitsSystemWindows=&quot;true&quot;</span><br><span class="line">    android:id=&quot;@+id/id_drawerlayout&quot;</span><br><span class="line">    &gt;</span><br><span class="line">    &lt;!--第一个主界面--&gt;</span><br><span class="line">    &lt;LinearLayout</span><br><span class="line">        android:layout_width=&quot;match_parent&quot;</span><br><span class="line">        android:layout_height=&quot;match_parent&quot;</span><br><span class="line">        android:orientation=&quot;vertical&quot;&gt;</span><br><span class="line">        &lt;include layout=&quot;@layout/mytoolbar&quot; /&gt;</span><br><span class="line">        &lt;TextView</span><br><span class="line">            android:layout_width=&quot;match_parent&quot;</span><br><span class="line">            android:layout_height=&quot;match_parent&quot;</span><br><span class="line">            android:gravity=&quot;center&quot;</span><br><span class="line">            android:text=&quot;主内容界面&quot;</span><br><span class="line">            android:textColor=&quot;@android:color/white&quot;/&gt;</span><br><span class="line">    &lt;/LinearLayout&gt;</span><br><span class="line">      &lt;!--第二个隐藏界面--&gt;</span><br><span class="line">      &lt;LinearLayout</span><br><span class="line">          android:id=&quot;@+id/ll_tabs&quot;</span><br><span class="line">          android:layout_width=&quot;match_parent&quot;</span><br><span class="line">          android:layout_height=&quot;match_parent&quot;</span><br><span class="line">          android:background=&quot;@android:color/white&quot;</span><br><span class="line">          android:orientation=&quot;vertical&quot;</span><br><span class="line">          android:layout_gravity=&quot;start&quot;&gt;</span><br><span class="line">          &lt;ImageView</span><br><span class="line">              android:layout_width=&quot;match_parent&quot;</span><br><span class="line">              android:layout_height=&quot;150dp&quot;</span><br><span class="line">              android:background=&quot;@drawable/back&quot;/&gt;</span><br><span class="line">          &lt;RadioGroup</span><br><span class="line">              android:layout_width=&quot;match_parent&quot;</span><br><span class="line">              android:layout_height=&quot;match_parent&quot;</span><br><span class="line">              &gt;</span><br><span class="line">              &lt;RadioButton</span><br><span class="line">                  android:text=&quot;test1&quot;</span><br><span class="line">                  android:layout_width=&quot;match_parent&quot;</span><br><span class="line">                  android:layout_height=&quot;match_parent&quot; /&gt;</span><br><span class="line">          &lt;/RadioGroup&gt;</span><br><span class="line">      &lt;/LinearLayout&gt;</span><br><span class="line">&lt;/android.support.v4.widget.DrawerLayout&gt;</span><br></pre></td></tr></table></figure></p>
+<p>##DrawerLayout的细节<br>在使用DrawerLayout的过程中，由于学业不精，经常遇到这样那样的问题让我很郁闷，在经过各种坑和仔细研究后进行总结，为以后使用做准备。</p>
+<ul>
+<li>首先最重要的就是，第二个子界面，也就是你隐藏的界面，属性里面一定要加上android:layout_gravity=”start”这句，来告诉滑动菜单是在左边隐藏还是右边，一般使用start系统会根据语言习惯来定位。</li>
+<li>在主界面需要加上一个导航按钮告诉用户可以滑动菜单内容出来，这个导航按钮也是费了一番功夫，开始总算点了闪退，之后点了又不出来子界面，后来总算没问题了，主要是在Java代码里面先要有<br><code>getSupportActionBar().setDisplayHomeAsUpEnabled(true);</code><br>这句是为了让导航按钮显示出来，之后DrawerLayout实例化,然后要有这几句<br>`<br>mDrawerToggle= new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open,R.string.close);<pre><code>mDrawerToggle.syncState();
+drawerLayout.setDrawerListener(mDrawerToggle);
+</code></pre>`<br>最后可以重写下onBackPressed（）函数来做个返回按钮的监听：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public void onBackPressed() &#123;</span><br><span class="line">    //返回按钮的监听</span><br><span class="line">    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.id_drawerlayout);</span><br><span class="line">    if (drawer.isDrawerOpen(GravityCompat.START)) &#123;</span><br><span class="line">        drawer.closeDrawer(GravityCompat.START);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        super.onBackPressed();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>一个简单的DrawerLayout+Toolbar界面基本就大功告成啦，当然现在官方也提供了NavigationView的滑动菜单模版做的效果是非常棒的~可以直接使用，不过自己实现一遍也可以了解实现原理便于我们理解使用^_^</p>
+<p>##Palette的应用</p>
+<ol start="4">
+<li><p>Palette的应用<br>这次Android5.x用Palete来提取颜色，从而让主题能够动态适应当前界面的色调，做到整个App颜色的颜色基调和谐统一。<br>Android内置了几种提取色调的种类：</p>
+<p> Vibrant(充满活力的）<br> Vibrant dark(充满活力的黑）<br> Vibrant light(充满活力的亮）<br> Muted（柔和的）<br> Muted dark(柔和的黑）<br> Muted light（柔和的亮）</p>
+</li>
+</ol>
+<p>要使用Palette,我们需要引用’com.android.support:palette-v7:23.0.1’，这在之前我们已经配置过了，实现提取颜色非常容易，只要将bitmap传递给Palette，调用generate即可，在onGenerated回调中得到图片的色调，这里我们获取的是图片充满活力的色调，最后我们把Toolbar的背景设置为该图片的色调。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Bitmap bitmap= BitmapFactory.decodeResource(getResources(),R.drawable.bitmap);</span><br><span class="line">      Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() &#123;</span><br><span class="line">          @Override</span><br><span class="line">          public void onGenerated(Palette palette) &#123;</span><br><span class="line">              Palette.Swatch swatch=palette.getVibrantSwatch();</span><br><span class="line">              getSupportActionBar().setBackgroundDrawable(new ColorDrawable(swatch.getRgb()));</span><br><span class="line"></span><br><span class="line">          &#125;</span><br><span class="line">      &#125;);</span><br></pre></td></tr></table></figure></p>
+<p>来看看效果：</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+<div>
+    
+        
+    
+</div>
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/26/Blog/Android/Android基础学习总结（三）——小巧好用的CardView/" rel="next" title>
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/28/Blog/Android/Android基础学习总结（六）——TextInputLayout+EditText 轻松实现登录界面/" rel="prev" title>
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Zero、">
+            
+              <p class="site-author-name" itemprop="name">Zero、</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives">
+                
+                    <span class="site-state-item-count">59</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/kilotwo" title="GitHub &rarr; https://github.com/kilotwo" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zero、</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">332k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+    <span title="站点阅读时长">5:02</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+  
+  <script color="0,0,0" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: ture,
+    appId: 'jNfDrH5MBW35Ejng6bgh05G8-gzGzoHsz',
+    appKey: 'YqVyGC0hIm6TEhKbgktVrkcN',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: '' || 'zh-cn'
+  });
+</script>
+
+
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/love.js"></script>
+
+</body>
+</html>

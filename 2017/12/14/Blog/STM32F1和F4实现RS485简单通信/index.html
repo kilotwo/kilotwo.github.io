@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/322.ico?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/161.ico?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="学习总线时曾经要求实现RS485通信，恰好跟前有两块带RS485的stm32开发板于是就简单实现了下。 #####先说下实现的功能，一块STM32F103板和STM32F407板通过RS485总线连接，F103板子采集温度发给F407屏幕显示出来，F407能够控制F103板子上的流水灯开关，然后F103能够将灯的实时状态发给F407显示，以此来实现双向通信。 下面直接贴关键代码F103 main.">
+<meta name="keywords" content="自动化，计算机视觉，算法，Android，QT5，linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="南七忆梦_">
+<meta property="og:url" content="https://kilotwo.github.io/2017/12/14/Blog/STM32F1和F4实现RS485简单通信/index.html">
+<meta property="og:site_name" content="南七忆梦_">
+<meta property="og:description" content="学习总线时曾经要求实现RS485通信，恰好跟前有两块带RS485的stm32开发板于是就简单实现了下。 #####先说下实现的功能，一块STM32F103板和STM32F407板通过RS485总线连接，F103板子采集温度发给F407屏幕显示出来，F407能够控制F103板子上的流水灯开关，然后F103能够将灯的实时状态发给F407显示，以此来实现双向通信。 下面直接贴关键代码F103 main.">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-01-30T02:35:17.050Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="南七忆梦_">
+<meta name="twitter:description" content="学习总线时曾经要求实现RS485通信，恰好跟前有两块带RS485的stm32开发板于是就简单实现了下。 #####先说下实现的功能，一块STM32F103板和STM32F407板通过RS485总线连接，F103板子采集温度发给F407屏幕显示出来，F407能够控制F103板子上的流水灯开关，然后F103能够将灯的实时状态发给F407显示，以此来实现双向通信。 下面直接贴关键代码F103 main.">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://kilotwo.github.io/2017/12/14/Blog/STM32F1和F4实现RS485简单通信/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title> | 南七忆梦_</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">南七忆梦_</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/kilotwo" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://kilotwo.github.io/2017/12/14/Blog/STM32F1和F4实现RS485简单通信/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zero、">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="南七忆梦_">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-12-14 00:10:27" itemprop="dateCreated datePublished" datetime="2017-12-14T00:10:27+08:00">2017-12-14</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-01-30 10:35:17" itemprop="dateModified" datetime="2018-01-30T10:35:17+08:00">2018-01-30</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2017/12/14/Blog/STM32F1和F4实现RS485简单通信/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2017/12/14/Blog/STM32F1和F4实现RS485简单通信/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">12k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">11 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>学习总线时曾经要求实现RS485通信，恰好跟前有两块带RS485的stm32开发板于是就简单实现了下。</p>
+<p>#####先说下实现的功能，一块STM32F103板和STM32F407板通过RS485总线连接，F103板子采集温度发给F407屏幕显示出来，F407能够控制F103板子上的流水灯开关，然后F103能够将灯的实时状态发给F407显示，以此来实现双向通信。</p>
+<h4 id="下面直接贴关键代码"><a href="#下面直接贴关键代码" class="headerlink" title="下面直接贴关键代码"></a>下面直接贴关键代码</h4><p><strong>F103 main.c</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><span class="line">double temp;</span><br><span class="line">char isget;</span><br><span class="line">char buf[8];				//接收缓存</span><br><span class="line">char tbuf[8];				//发送缓存</span><br><span class="line">void send(void);</span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	int led=0;</span><br><span class="line">	int ttbuf;</span><br><span class="line">	LED_Init();				//初始化LED</span><br><span class="line">	rs485_init();			//初始化RS485配置</span><br><span class="line">	ds18b20_init();			//DS18B20初始化</span><br><span class="line">	isget=0;</span><br><span class="line">	tbuf[0]=&apos;S&apos;;			//起始帧</span><br><span class="line">	tbuf[1]=0x00;			//地址</span><br><span class="line">	tbuf[2]=0x02;			//命令</span><br><span class="line">	tbuf[7]=&apos;E&apos;;			//结束帧</span><br><span class="line">	GPIOC-&gt;ODR|=0x0080;		</span><br><span class="line">	while(1)</span><br><span class="line">	&#123;</span><br><span class="line">		if(isget)</span><br><span class="line">		&#123;</span><br><span class="line">			isget=0;</span><br><span class="line">			if(buf[1]==0x01)								//判断是该机地址</span><br><span class="line">			&#123;</span><br><span class="line">				if(buf[2]==0x0A)							//判断温度信号命令</span><br><span class="line">				&#123;</span><br><span class="line">					temp=readtemp();  					//读取温度</span><br><span class="line">					ttbuf=1000*temp;					//温度去小数</span><br><span class="line">					tbuf[2]=0x02;    					//发送温度命令</span><br><span class="line">					</span><br><span class="line">					//以下将 int型温度拆分成字节发送</span><br><span class="line">					tbuf[3]=ttbuf&amp;0x000000ff;			</span><br><span class="line">					tbuf[4]=(ttbuf&gt;&gt;8)&amp;0x000000ff;		</span><br><span class="line">					tbuf[5]=(ttbuf&gt;&gt;16)&amp;0x000000ff;</span><br><span class="line">					tbuf[6]=(ttbuf&gt;&gt;24)&amp;0x000000ff;</span><br><span class="line">					</span><br><span class="line">					</span><br><span class="line">					led_huayang(led&lt;&lt;7);					//led信号灯</span><br><span class="line">					send();									//发送</span><br><span class="line">				&#125;else if(buf[2]==0x0b)						//判断控制信号</span><br><span class="line">				&#123;</span><br><span class="line">					led_huayang(led&lt;&lt;7);</span><br><span class="line">					if(led==0)</span><br><span class="line">					&#123;</span><br><span class="line">						GPIOC-&gt;ODR|=0x0080;</span><br><span class="line">						led=1;</span><br><span class="line">					&#125;else&#123;</span><br><span class="line">						GPIOC-&gt;ODR&amp;=0xff7f;</span><br><span class="line">						led=0;</span><br><span class="line">					&#125;</span><br><span class="line">					tbuf[2]=0x03;								//返回信号</span><br><span class="line">					tbuf[3]=led;								//返回灯的状态</span><br><span class="line">					send();										//发送灯的状态</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;			</span><br><span class="line">&#125;</span><br><span class="line">int state=0,len=0;</span><br><span class="line">void send()</span><br><span class="line">&#123;</span><br><span class="line">	int k;</span><br><span class="line">		GPIO_SetBits(GPIOG,GPIO_Pin_3);</span><br><span class="line">		delay_ms(1);</span><br><span class="line">	for(k=0;k&lt;8;k++)</span><br><span class="line">	&#123;</span><br><span class="line">		USART_SendData(USART2,tbuf[k]);</span><br><span class="line">		while(USART_GetFlagStatus(USART2,USART_FLAG_TXE)==RESET);</span><br><span class="line">	&#125;</span><br><span class="line">		delay_ms(2);		</span><br><span class="line">		GPIO_ResetBits(GPIOG,GPIO_Pin_3);</span><br><span class="line">&#125;</span><br><span class="line">void USART2_IRQHandler(void)	//485通信中断函数</span><br><span class="line">&#123;</span><br><span class="line">	static u8 k;</span><br><span class="line">	USART_ClearFlag(USART2,USART_FLAG_TC);</span><br><span class="line">	if(USART_GetITStatus(USART2,USART_IT_RXNE)!=RESET)//检查指定的USART中断发生与否	</span><br><span class="line">	&#123;</span><br><span class="line">		k=USART_ReceiveData(USART2);</span><br><span class="line">		switch(k)</span><br><span class="line">		&#123;</span><br><span class="line">			case &apos;S&apos;:</span><br><span class="line">				if(state==0)</span><br><span class="line">				&#123;</span><br><span class="line">					state=1;</span><br><span class="line">					len=0;</span><br><span class="line">				&#125;</span><br><span class="line">				break;</span><br><span class="line">			case &apos;E&apos;:</span><br><span class="line">				if(state==2)</span><br><span class="line">				&#123;</span><br><span class="line">					state=0;</span><br><span class="line">					isget=1;</span><br><span class="line">					len=0;</span><br><span class="line">				&#125;</span><br><span class="line">				break;</span><br><span class="line">			default:</span><br><span class="line">				if(state==1)</span><br><span class="line">				&#123;</span><br><span class="line">					buf[1+len++]=k;</span><br><span class="line">					if(len==6)</span><br><span class="line">						state=2;</span><br><span class="line">				&#125;</span><br><span class="line">				break;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>F103 rs485.c </strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">/*******************************************************************************</span><br><span class="line">* 函 数 名         : rs485_init</span><br><span class="line">* 函数功能		   : IO端口及串口2，时钟初始化函数	   </span><br><span class="line">* 输    入         : 无</span><br><span class="line">* 输    出         : 无</span><br><span class="line">*******************************************************************************/</span><br><span class="line">void rs485_init()</span><br><span class="line">&#123;</span><br><span class="line">	GPIO_InitTypeDef GPIO_InitStructure;	 //声明一个结构体变量，用来初始化GPIO</span><br><span class="line">	USART_InitTypeDef USART_InitStructure;	 //串口结构体定义</span><br><span class="line">	NVIC_InitTypeDef NVIC_InitStructure;	//中断结构体定义</span><br><span class="line">	//打开时钟	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOG|RCC_APB2Periph_GPIOA|RCC_APB2Periph_AFIO,ENABLE);</span><br><span class="line">	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2,ENABLE);</span><br><span class="line">	/*  配置GPIO的模式和IO口 */</span><br><span class="line">	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_2;	//TX-485	//串口输出PA2</span><br><span class="line">	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_AF_PP;		  //复用推挽输出</span><br><span class="line">	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;	</span><br><span class="line">	GPIO_Init(GPIOA,&amp;GPIO_InitStructure);				 	/* 初始化串口输入IO */</span><br><span class="line"></span><br><span class="line">	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_3;	//CS-485</span><br><span class="line">	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_Out_PP;	   //推挽输出</span><br><span class="line">	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;</span><br><span class="line">	GPIO_Init(GPIOG,&amp;GPIO_InitStructure);		   </span><br><span class="line">    </span><br><span class="line">	GPIO_InitStructure.GPIO_Pin=GPIO_Pin_3;	//RX-485	   //串口输入PA3</span><br><span class="line">	GPIO_InitStructure.GPIO_Mode=GPIO_Mode_IN_FLOATING;	    //模拟输入</span><br><span class="line">	GPIO_InitStructure.GPIO_Speed=GPIO_Speed_50MHz;</span><br><span class="line">	GPIO_Init(GPIOA,&amp;GPIO_InitStructure);			 /* 初始化GPIO */</span><br><span class="line"></span><br><span class="line">	USART_InitStructure.USART_BaudRate = 9600;			   //波特率设置为9600	//波特率</span><br><span class="line">	USART_InitStructure.USART_WordLength = USART_WordLength_8b;	   //数据长8位</span><br><span class="line">	USART_InitStructure.USART_StopBits = USART_StopBits_1;			//1位停止位</span><br><span class="line">	USART_InitStructure.USART_Parity = USART_Parity_No;		   //无效验</span><br><span class="line">	USART_InitStructure.USART_HardwareFlowControl =USART_HardwareFlowControl_None; //失能硬件流</span><br><span class="line">	USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;		 //开启发送和接受模式</span><br><span class="line">	USART_Init(USART2, &amp;USART_InitStructure);	   /* 初始化USART2 */</span><br><span class="line">	USART_Cmd(USART2,ENABLE);	</span><br><span class="line">	USART_ITConfig(USART2,USART_IT_RXNE,ENABLE);  //使能或者失能指定的USART中断 接收中断</span><br><span class="line">	USART_ClearFlag(USART2,USART_FLAG_TC);	 //清除USARTx的待处理标志位</span><br><span class="line"></span><br><span class="line">	/* 设置NVIC参数 */</span><br><span class="line">	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);</span><br><span class="line">	NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn; 	   //打开USART2的全局中断</span><br><span class="line">	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;	 //抢占优先级为0</span><br><span class="line">	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1; 		 //响应优先级为1</span><br><span class="line">	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; 		 //使能</span><br><span class="line">	NVIC_Init(&amp;NVIC_InitStructure);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>F407 main.c<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">	extern int temp;</span><br><span class="line">	extern int flag;</span><br><span class="line">	extern int led;</span><br><span class="line">int main(void)</span><br><span class="line">&#123; </span><br><span class="line">	char*strbuf;</span><br><span class="line">	char buf[8];				//接收缓存</span><br><span class="line">	buf[0]=&apos;S&apos;;					//起始位</span><br><span class="line">	buf[1]=0x01; 				//地址</span><br><span class="line">	buf[7]=&apos;E&apos;;		//终止位</span><br><span class="line">	</span><br><span class="line">	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置系统中断优先级分组2</span><br><span class="line">	delay_init();       //初始化延时函数	</span><br><span class="line">	LED_Init();					//初始化LED </span><br><span class="line">	BEEP_Init();        //初始化蜂鸣器</span><br><span class="line"> 	LCD_Init();					//LCD初始化 </span><br><span class="line">	KEY_Init(); 				//按键初始化  </span><br><span class="line">	RS485_Init(9600);		//初始化RS485串口2</span><br><span class="line"> 	BRUSH_COLOR=BLUE;    //设置字体为红色 </span><br><span class="line">	</span><br><span class="line">	LCD_DisplayString(8,10,24,&quot;Granary Temperature &quot;);	</span><br><span class="line">	LCD_DisplayString(8,40,24,&quot;Test Control System&quot;);	</span><br><span class="line">	BRUSH_COLOR=BLACK;  </span><br><span class="line">	LCD_DisplayString(0,100,16,&quot;Communication mode    :RS485 &quot;);	</span><br><span class="line">	LCD_DisplayString(0,190,16,&quot;Press down KEY2 to control LED&quot;);    	//显示提示信息	</span><br><span class="line">	LCD_DisplayString(0,130,16,&quot;Real-time temperature :&quot;);	</span><br><span class="line">	LCD_DisplayString(0,160,16,&quot;LED       state       :&quot;);	</span><br><span class="line"> 		</span><br><span class="line">		buf[2]=0x0A;            //设置温度命令</span><br><span class="line">		RS485_Send_Data(buf,8); //发送温度命令</span><br><span class="line">		buf[2]=0x0b;			//设置控制命令</span><br><span class="line">		RS485_Send_Data(buf,8); //led命令</span><br><span class="line">							  </span><br><span class="line">	while(1)</span><br><span class="line">	&#123;</span><br><span class="line">		key_scan(0);				</span><br><span class="line">		</span><br><span class="line">		if(flag==1)&#123;</span><br><span class="line">			delay_ms(300);</span><br><span class="line">			flag=0;	</span><br><span class="line">			</span><br><span class="line">			strbuf=float2str(temp/1000.0);</span><br><span class="line">			strbuf[6]=&apos;C&apos;;</span><br><span class="line">			strbuf[7]=0;</span><br><span class="line">			BRUSH_COLOR=RED;</span><br><span class="line">			LCD_DisplayString(184,130,16,(u8*)strbuf);    	//显示温度</span><br><span class="line">			</span><br><span class="line">			buf[2]=0x0A; //温度命令</span><br><span class="line">			if(led==1)</span><br><span class="line">				LCD_DisplayString(184,160,16,&quot;LED ON &quot;);</span><br><span class="line">			else</span><br><span class="line">				LCD_DisplayString(184,160,16,&quot;LED OFF&quot;);</span><br><span class="line">			</span><br><span class="line">			RS485_Send_Data(buf,8); //温度命令</span><br><span class="line">		&#125;	</span><br><span class="line">		  if(keyup_data ==KEY2_DATA)</span><br><span class="line">		  &#123;</span><br><span class="line">		 buf[2]=0x0B; //LED命令</span><br><span class="line">		 RS485_Send_Data(buf,8); //温度命令</span><br><span class="line">		 LED2=!LED2;</span><br><span class="line">		  &#125;</span><br><span class="line">	&#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>F407 rs485.c<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">int temp;</span><br><span class="line">  	  int flag=0;</span><br><span class="line">	  int led=0;</span><br><span class="line">//接收缓存区 	</span><br><span class="line">u8 RS485_receive_str[128];   //接收缓冲,最大128个字节.</span><br><span class="line">u8 uart_byte_count=0;        //接收到的数据长度</span><br><span class="line">										 </span><br><span class="line">//初始化IO 串口2   bound:波特率	</span><br><span class="line">void RS485_Init(u32 bound)</span><br><span class="line">&#123;  	 </span><br><span class="line">  GPIO_InitTypeDef GPIO_InitStructure;</span><br><span class="line">	USART_InitTypeDef USART_InitStructure;</span><br><span class="line">	NVIC_InitTypeDef NVIC_InitStructure;</span><br><span class="line">	</span><br><span class="line">	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA,ENABLE); //使能GPIOA时钟</span><br><span class="line">	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART2,ENABLE);//使能USART2时钟</span><br><span class="line">	</span><br><span class="line">  //串口2引脚复用映射</span><br><span class="line">	GPIO_PinAFConfig(GPIOA,GPIO_PinSource2,GPIO_AF_USART2); //GPIOA2复用为USART2</span><br><span class="line">	GPIO_PinAFConfig(GPIOA,GPIO_PinSource3,GPIO_AF_USART2); //GPIOA3复用为USART2</span><br><span class="line">	</span><br><span class="line">	//USART2    </span><br><span class="line">  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2 | GPIO_Pin_3; //GPIOA2与GPIOA3</span><br><span class="line">	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;//复用功能</span><br><span class="line">	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;	//速度100MHz</span><br><span class="line">	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; //推挽复用输出</span><br><span class="line">	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP; //上拉</span><br><span class="line">	GPIO_Init(GPIOA,&amp;GPIO_InitStructure); //初始化PA2，PA3</span><br><span class="line">	</span><br><span class="line">	//PG8推挽输出，485模式控制  </span><br><span class="line">  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6; //GPIOG6</span><br><span class="line">	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;//输出</span><br><span class="line">	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;	//速度100MHz</span><br><span class="line">	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP; //推挽输出</span><br><span class="line">	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP; //上拉</span><br><span class="line">	GPIO_Init(GPIOG,&amp;GPIO_InitStructure); //初始化PG8</span><br><span class="line">	</span><br><span class="line">   //USART2 初始化设置</span><br><span class="line">	USART_InitStructure.USART_BaudRate = bound;//波特率设置</span><br><span class="line">	USART_InitStructure.USART_WordLength = USART_WordLength_8b;//字长为8位数据格式</span><br><span class="line">	USART_InitStructure.USART_StopBits = USART_StopBits_1;//一个停止位</span><br><span class="line">	USART_InitStructure.USART_Parity = USART_Parity_No;//无奇偶校验位</span><br><span class="line">	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;//无硬件数据流控制</span><br><span class="line">	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;	//收发模式</span><br><span class="line">  USART_Init(USART2, &amp;USART_InitStructure); //初始化串口2</span><br><span class="line">	</span><br><span class="line">  USART_Cmd(USART2, ENABLE);  //使能串口 2</span><br><span class="line">	</span><br><span class="line">	USART_ClearFlag(USART2, USART_FLAG_TC);</span><br><span class="line">	</span><br><span class="line">	USART_ITConfig(USART2, USART_IT_RXNE, ENABLE);//开启接受中断</span><br><span class="line"></span><br><span class="line">	//Usart2 NVIC 配置</span><br><span class="line">  NVIC_InitStructure.NVIC_IRQChannel = USART2_IRQn;</span><br><span class="line">	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=3;//抢占优先级3</span><br><span class="line">	NVIC_InitStructure.NVIC_IRQChannelSubPriority =3;		//子优先级3</span><br><span class="line">	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ通道使能</span><br><span class="line">	NVIC_Init(&amp;NVIC_InitStructure);	//根据指定的参数初始化VIC寄存器、</span><br><span class="line">	</span><br><span class="line">	RS485_TX_EN=0;				//初始化默认为接收模式	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//串口2接收中断服务函数</span><br><span class="line">int state=0;</span><br><span class="line">void USART2_IRQHandler(void)</span><br><span class="line">&#123;</span><br><span class="line">	u8 rec_data;	    </span><br><span class="line">	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)//接收到数据</span><br><span class="line">	&#123;	 	</span><br><span class="line">		rec_data =(u8)USART_ReceiveData(USART2);        		 //(USART2-&gt;DR) 读取接收到的数据</span><br><span class="line">        if(rec_data==&apos;S&apos;&amp;&amp;state==0)		  	                     //如果是S，表示是命令信息的起始位</span><br><span class="line">		&#123;</span><br><span class="line">			state=1;</span><br><span class="line">			uart_byte_count=0x00; </span><br><span class="line">		&#125;else if(rec_data==&apos;E&apos;&amp;&amp;state==2)		                  //如果E，表示是命令信息传送的结束位处理数据</span><br><span class="line">		&#123;</span><br><span class="line">			state=0;</span><br><span class="line">			if(RS485_receive_str[0]==0x00) 						//判断地址 地址正确</span><br><span class="line">			&#123;</span><br><span class="line">				if(RS485_receive_str[1]==0x02) 					//接受温度数据</span><br><span class="line">				&#123;</span><br><span class="line">					temp=RS485_receive_str[5]&lt;&lt;24|RS485_receive_str[2]|RS485_receive_str[3]&lt;&lt;8|RS485_receive_str[4]&lt;&lt;16;</span><br><span class="line">					flag=1;</span><br><span class="line">				&#125;	else if(RS485_receive_str[1]==0x03)	  		//led控制回馈</span><br><span class="line">				&#123;</span><br><span class="line">					led=RS485_receive_str[2];</span><br><span class="line">					</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;else if(state==1)									//接收数据</span><br><span class="line">		&#123;</span><br><span class="line">			RS485_receive_str[uart_byte_count++]=rec_data;</span><br><span class="line">			if(uart_byte_count==6)</span><br><span class="line">				state=2;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;  											 </span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/****************************************************************************</span><br><span class="line">* 名    称: void RS485_Send_Data(u8 *buf,u8 len)</span><br><span class="line">* 功    能：RS485发送len个字节</span><br><span class="line">* 入口参数：buf:发送区首地址</span><br><span class="line">            len:发送的字节数 </span><br><span class="line">* 返回参数：无</span><br><span class="line">* 说    明：(为了和本代码的接收匹配,这里建议数据长度不要超过128个字节)       </span><br><span class="line">****************************************************************************/	</span><br><span class="line">void RS485_Send_Data(u8 *buf,u8 len)</span><br><span class="line">&#123;</span><br><span class="line">	u8 t;</span><br><span class="line">	RS485_TX_EN=1;			    //设置为发送模式</span><br><span class="line">  	for(t=0;t&lt;len;t++)		//循环发送数据</span><br><span class="line">	&#123;</span><br><span class="line">	  while(USART_GetFlagStatus(USART2,USART_FLAG_TC)==RESET); //等待发送结束		</span><br><span class="line">    USART_SendData(USART2,buf[t]); //发送数据</span><br><span class="line">	&#125;	 </span><br><span class="line">	while(USART_GetFlagStatus(USART2,USART_FLAG_TC)==RESET);   //等待发送结束		</span><br><span class="line">	uart_byte_count=0;	  </span><br><span class="line">	RS485_TX_EN=0;				//发送完设置为接收模式	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/****************************************************************************</span><br><span class="line">* 名    称: void RS485_Receive_Data(u8 *buf,u8 *len)</span><br><span class="line">* 功    能：RS485查询接收到的数据</span><br><span class="line">* 入口参数：buf:接收缓存首地址</span><br><span class="line">            len:读到的数据长度 </span><br><span class="line">* 返回参数：无</span><br><span class="line">* 说    明：      </span><br><span class="line">****************************************************************************/</span><br><span class="line">void RS485_Receive_Data(u8 *buf,u8 *len)</span><br><span class="line">&#123;</span><br><span class="line">	u8 rxlen=uart_byte_count;</span><br><span class="line">	u8 i=0;</span><br><span class="line">	*len=0;				   //默认为0</span><br><span class="line">	delay_ms(10);		 //等待10ms,连续超过10ms没有接收到一个数据,则认为接收结束</span><br><span class="line">	</span><br><span class="line">	if(rxlen==uart_byte_count&amp;&amp;rxlen) //接收到了数据,且接收完成了</span><br><span class="line">	&#123;</span><br><span class="line">		for(i=0;i&lt;rxlen;i++)</span><br><span class="line">		&#123;</span><br><span class="line">			buf[i]=RS485_receive_str[i];	</span><br><span class="line">		&#125;		</span><br><span class="line">		*len=uart_byte_count;	//记录本次数据长度</span><br><span class="line">		uart_byte_count=0;		  //清零</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+<div>
+    
+        
+    
+</div>
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/13/Blog/C和指针---读书小记/" rel="next" title>
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/16/Blog/Java/Java学习与技术总结——（一）基础部分（长期更新）/" rel="prev" title>
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Zero、">
+            
+              <p class="site-author-name" itemprop="name">Zero、</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives">
+                
+                    <span class="site-state-item-count">59</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/kilotwo" title="GitHub &rarr; https://github.com/kilotwo" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#下面直接贴关键代码"><span class="nav-number">1.</span> <span class="nav-text">下面直接贴关键代码</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zero、</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">332k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+    <span title="站点阅读时长">5:02</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+  
+  <script color="0,0,0" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: ture,
+    appId: 'jNfDrH5MBW35Ejng6bgh05G8-gzGzoHsz',
+    appKey: 'YqVyGC0hIm6TEhKbgktVrkcN',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: '' || 'zh-cn'
+  });
+</script>
+
+
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/love.js"></script>
+
+</body>
+</html>

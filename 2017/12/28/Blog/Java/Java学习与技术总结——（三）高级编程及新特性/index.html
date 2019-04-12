@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.1.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/322.ico?v=7.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/161.ico?v=7.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.1.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="[TOC] ##1. AnnotationJDK1.5之后最具有鲜明特点的莫过于注解技术的提出与应用，利用注解技术可以回避面向对象中覆写方法名称固定的问题，并且其直观的描述也适合开发者进行程序的编写。 ###1.1 准确的覆写：@Override当进行方法的覆写时，为了保证子类所覆写的方法的确是父类中定义过的方法，就可以加上”@Override” 注解，这样即使在覆写的时候出现了错误，也可以在编译">
+<meta name="keywords" content="自动化，计算机视觉，算法，Android，QT5，linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="南七忆梦_">
+<meta property="og:url" content="https://kilotwo.github.io/2017/12/28/Blog/Java/Java学习与技术总结——（三）高级编程及新特性/index.html">
+<meta property="og:site_name" content="南七忆梦_">
+<meta property="og:description" content="[TOC] ##1. AnnotationJDK1.5之后最具有鲜明特点的莫过于注解技术的提出与应用，利用注解技术可以回避面向对象中覆写方法名称固定的问题，并且其直观的描述也适合开发者进行程序的编写。 ###1.1 准确的覆写：@Override当进行方法的覆写时，为了保证子类所覆写的方法的确是父类中定义过的方法，就可以加上”@Override” 注解，这样即使在覆写的时候出现了错误，也可以在编译">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-01-24T09:01:51.240Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="南七忆梦_">
+<meta name="twitter:description" content="[TOC] ##1. AnnotationJDK1.5之后最具有鲜明特点的莫过于注解技术的提出与应用，利用注解技术可以回避面向对象中覆写方法名称固定的问题，并且其直观的描述也适合开发者进行程序的编写。 ###1.1 准确的覆写：@Override当进行方法的覆写时，为了保证子类所覆写的方法的确是父类中定义过的方法，就可以加上”@Override” 注解，这样即使在覆写的时候出现了错误，也可以在编译">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="https://kilotwo.github.io/2017/12/28/Blog/Java/Java学习与技术总结——（三）高级编程及新特性/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title> | 南七忆梦_</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">南七忆梦_</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+  
+  
+
+  
+
+  <a href="https://github.com/kilotwo" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewbox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a>
+
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://kilotwo.github.io/2017/12/28/Blog/Java/Java学习与技术总结——（三）高级编程及新特性/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zero、">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="南七忆梦_">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-12-28 23:52:45" itemprop="dateCreated datePublished" datetime="2017-12-28T23:52:45+08:00">2017-12-28</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-01-24 17:01:51" itemprop="dateModified" datetime="2018-01-24T17:01:51+08:00">2018-01-24</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2017/12/28/Blog/Java/Java学习与技术总结——（三）高级编程及新特性/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2017/12/28/Blog/Java/Java学习与技术总结——（三）高级编程及新特性/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon">
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">8k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">7 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>[TOC]</p>
+<p>##1. Annotation<br>JDK1.5之后最具有鲜明特点的莫过于注解技术的提出与应用，利用注解技术可以回避面向对象中覆写方法名称固定的问题，并且其直观的描述也适合开发者进行程序的编写。</p>
+<p>###1.1 准确的覆写：@Override<br>当进行方法的覆写时，为了保证子类所覆写的方法的确是父类中定义过的方法，就可以加上”@Override” 注解，这样即使在覆写的时候出现了错误，也可以在编译时检查出来。例如:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class Car</span><br><span class="line">&#123;</span><br><span class="line">	@Override			//注解后只要正确进行覆写，就不会报错</span><br><span class="line">    public String toString()</span><br><span class="line">    &#123;</span><br><span class="line">    	return &quot;Java&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    public String tostring()</span><br><span class="line">    &#123;</span><br><span class="line">    return &quot;Java&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注意：不写该注解在正确覆写的时候不会出错，但是一旦覆写出错例如下面的情况将toString大小拼写错误，那么无法得知覆写失败。</p>
+<p>###1.2 声明过期操作：@Deprecated<br>可以用次注解来声明过期的不建议使用的方法，使用方法和上面类似。</p>
+<p>###1.3 压制警告：@SuppressWarnings<br>在编写程序的时候经常会在编译时产生安全警告，但是我们却执意这样做，这样就可以使用@SuppressWarnings注解来压制警告信息。例如:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@SuppressWarnings&#123;(&quot;rawtypes&quot;,&quot;unchecked&quot;)&#125;	//压制rawtypes、unchecked警告信息</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p>##2. Java常用类库</p>
+<p>###2.1 Random类<br>java.util.Random是一个专门负责产生随机数的操作类，用法基本有如下：</p>
+<table>
+<thead>
+<tr>
+<th>column</th>
+<th>column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public Random()；</td>
+<td>创建一个Random实例；</td>
+</tr>
+<tr>
+<td>public Random(long seed)；</td>
+<td>创建一个新的Random实例并且设置一个种子数；</td>
+</tr>
+<tr>
+<td>public int nextInt(int bound)；</td>
+<td>产生一个不大于指定边界的随机整数；</td>
+</tr>
+</tbody>
+</table>
+<p>举个简单的例子如下，产生了10个不大于100的数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Random rand=new Random();</span><br><span class="line">for(int i=0;i&lt;10;i++)</span><br><span class="line">&#123;</span><br><span class="line">	System.out.println(rand.nextInt(100)+&quot;、&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>下面以此编写一个彩票随机选号系统：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">public class Random &#123;</span><br><span class="line">		public static void main(String[] args )</span><br><span class="line">		&#123;</span><br><span class="line">			java.util.Random rand =new java.util.Random();</span><br><span class="line">			int data[]=new int[7];</span><br><span class="line">			int foot=0;</span><br><span class="line">			while(foot&lt;7)</span><br><span class="line">			&#123;</span><br><span class="line">				int t=rand.nextInt(37);			//生成一个不大于37的数字</span><br><span class="line">				if(!isRepeat(data,t))			//如果数组中没有这个数字就加入</span><br><span class="line">				&#123;</span><br><span class="line">					data[foot++]=t;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			Arrays.sort(data);</span><br><span class="line">			System.out.println(&quot;彩票号码为：&quot;);</span><br><span class="line">			for(int x=0;x&lt;data.length;x++)</span><br><span class="line">			&#123;</span><br><span class="line"></span><br><span class="line">					System.out.print(data[x]+&quot;.&quot;);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		public static boolean isRepeat(int temp[],int num)	//判断数组中是否已经出现此号码的函数</span><br><span class="line">        &#123;</span><br><span class="line">			if(num==0)</span><br><span class="line">				return false;</span><br><span class="line">			for(int x=0;x&lt;temp.length;x++)</span><br><span class="line">			&#123;</span><br><span class="line">				if(temp[x]==num)&#123;</span><br><span class="line">					return true;</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			return false;</span><br><span class="line">		&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>每次出来的数字都不一样，结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">彩票号码为：</span><br><span class="line">3.4.6.14.16.19.34.</span><br></pre></td></tr></table></figure></p>
+<h2 id="2-2-Date类"><a href="#2-2-Date类" class="headerlink" title="2.2 Date类"></a>2.2 Date类</h2><p>日期是开发中经常会使用的操作之一，特别是在Android开发中也会出现日期的使用，那么在Java中如何实现日期的处理操作呢？一般使用Date类和日期格式化类SimpleDateFormat来输出时间，<br>java.util.Date可以获得当前时间，但是显得格式不适合阅读，这时候搭配日期格式化类SimpleDateFormat就可以将日期转化为字符串输出了，例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">public class data &#123;</span><br><span class="line">	public static void main(String args[])</span><br><span class="line">	&#123;</span><br><span class="line">		Date date =new Date();</span><br><span class="line">		System.out.println(&quot;未格式化的原始数据:&quot;+date);</span><br><span class="line">		SimpleDateFormat simpleDateFormat=new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss:SSS:&quot;);</span><br><span class="line">		String string=simpleDateFormat.format(date);</span><br><span class="line">		System.out.println(&quot;格式化的数据:&quot;+string);</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注意日期时间标记：年（yyyy）、月（MM）、日（dd）、时（HH）、分（mm）、秒（ss）、毫秒（SSS）<br>输出得到如下结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">未格式化的原始数据:Sat Dec 30 00:31:11 CST 2017</span><br><span class="line">格式化的数据:2017-12-30 00:31:11:261:</span><br></pre></td></tr></table></figure></p>
+<h2 id="2-3-Arrays-类"><a href="#2-3-Arrays-类" class="headerlink" title="2.3 Arrays 类"></a>2.3 Arrays 类</h2><p>在Java中，Arrays是一个定义在java.util包中专门进行数组操作的类，在这个类中定义了与数组有关的基本操作：二分查找、相等判断、数组填充等等。</p>
+<table>
+<thead>
+<tr>
+<th>column</th>
+<th>column</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public static boolean equals(int[] a,int[] a2);</td>
+<td>判断数组相等</td>
+</tr>
+<tr>
+<td>public static void fill(int[] a,int val);</td>
+<td>将指定内容填充进数组</td>
+</tr>
+<tr>
+<td>public static void sort(int[] a)</td>
+<td>数组排序</td>
+</tr>
+<tr>
+<td>public static int binarySearch(int[] a,int key)</td>
+<td>对排序后的数组进行二分查找指定元素</td>
+</tr>
+</tbody>
+</table>
+<p>实现二分查找：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">	int data[] =new int[]&#123;1,5,6,9,4,3,5,6,7,5&#125;;</span><br><span class="line">	java.util.Arrays.sort(data);</span><br><span class="line">for(int i:data)</span><br><span class="line">&#123;</span><br><span class="line">	System.out.print(i+&quot;,&quot;);</span><br><span class="line">&#125;</span><br><span class="line">	System.out.println(&quot;&quot;);</span><br><span class="line">	System.out.println(Arrays.binarySearch(data, 3));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出为：<br>1,3,4,5,5,5,6,6,7,9,<br>1</p>
+<h2 id="2-4-正则表达式"><a href="#2-4-正则表达式" class="headerlink" title="2.4 正则表达式"></a>2.4 正则表达式</h2><p>正则表达式在本质上是一种字符串操作的语法规则，正则表达式在JDK1.4引入Java，，主要用来匹配需要的字符串然后进行拆分、替换等操作，在网络爬虫中一般有广泛应用。</p>
+<h3 id="2-4-1-正则标记"><a href="#2-4-1-正则标记" class="headerlink" title="2.4.1 正则标记"></a>2.4.1 正则标记</h3><p>常用的正则标记都在java.util.regex.Pattern类中说明，常用的有以下几种。<br>1.单个字符</p>
+<ul>
+<li>字符   ：表示一位字符组成；</li>
+<li>\     ：表示转义字符“\”，所以后面当需要表示”\d”时，就需要使用”\d”来表示。</li>
+<li>\n     ：匹配换行（\n）符号</li>
+</ul>
+<p>2.字符集</p>
+<ul>
+<li>[abc]：表示可能是字符a,字符b，字符c中的任意一位；</li>
+<li>[^abc]：表示不是字符a、b、c中的任意一位；</li>
+<li>[a-z]:表示所有的小写字母；</li>
+<li>[a-zA-Z]：表示任意的一位字母，不区分大小写；</li>
+<li>[0-9]:表示任意的一位数字；</li>
+</ul>
+<p>3.简化的字符集表达式</p>
+<ul>
+<li>. ：一个点表示任意的一位字符；</li>
+<li>\d：等价于[0-9]，表示任意一位数字的简写；</li>
+<li>\D：等价于[^0-9]，表示不是任意一位数字的简写；</li>
+<li>\s：表示任意的空白字符，例如：”\t””\n”;</li>
+<li>\S：表示任意的非空白字符；</li>
+<li>\w：表示由任意字母、数字、_组成</li>
+</ul>
+<p>4.边界匹配</p>
+<ul>
+<li>^:正则的开始；</li>
+<li>$:正则的结束；</li>
+</ul>
+<p>5.数量表达</p>
+<ul>
+<li>正则？：表示此正则可以出现0或者1次以上；</li>
+<li>正则+：表示此正则可以出现1次或者1次以上；</li>
+<li>正则*：表示此正则可以出现0、1或者多次；</li>
+<li>正则{n}:表示此正则正好出现n次；</li>
+<li>正则｛n，｝：表示此正则出现n次以上；</li>
+</ul>
+<h3 id="2-4-2-String中的正则"><a href="#2-4-2-String中的正则" class="headerlink" title="2.4.2 String中的正则"></a>2.4.2 String中的正则</h3><p>在实际使用中一般直接使用String中的方法来见简化正则的操作，一般常用以下方法</p>
+<table>
+<thead>
+<tr>
+<th>方法名称</th>
+<th>函数描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>public boolean matches(String regex)</td>
+<td>正则验证，使用指定字符串判断是否符合给出的正则表达式结构</td>
+</tr>
+<tr>
+<td>public String replaceAll(String regex,String replacement)</td>
+<td>满足验证条件内容全部替换成新的内容</td>
+</tr>
+<tr>
+<td>public String[] split(String regex)</td>
+<td>按照指定的正则标记进行字符串全拆分</td>
+</tr>
+</tbody>
+</table>
+<p>例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String str= &quot;hello***wor***ld!&quot;;	//原来的乱七八糟语句</span><br><span class="line">System.out.println(str.replaceAll(&quot;[^a-z]&quot;, &quot;&quot;));	//将语句中不是小写字母的全部去掉</span><br></pre></td></tr></table></figure></p>
+<p>输出：<br>helloworld<br>注意：正则表达式是一个String字符串<br>或者这样：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">String str= &quot;mooc9world123java44android&quot;;	//原来的乱七八糟语句</span><br><span class="line">String result[]=str.split(&quot;\\d+&quot;);		//注意拆分后变成字符串数组，每个索引对应一个分出来的字符串</span><br><span class="line">for(String str1:result)</span><br><span class="line">&#123;</span><br><span class="line">	System.out.println(str1);			//输出拆分后的每个字符串</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>输出结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mooc</span><br><span class="line">world</span><br><span class="line">java</span><br><span class="line">android</span><br></pre></td></tr></table></figure></p>
+<p>总算忙完期末那堆事情了，继续复习JAVA，开更…<br>针对利用String的正则再举几个例子加深印象</p>
+<ul>
+<li><p>验证一个字符串是否是数字，若是则将其变为double型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">String str= &quot;10.10&quot;;				//原来的数字</span><br><span class="line">String regex=&quot;\\d+(\\.\\d+)?&quot;;		//设置正则 \\d+表示一位以上的数字 \\. 表示小数点 ?表示0个或1个这样的小数部分</span><br><span class="line">if(str.matches(regex))				//正则前需要验证</span><br><span class="line">&#123;</span><br><span class="line">	System.out.println(Double.parseDouble(str));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>判断给定字符串是否为IP地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">String str= &quot;192.168.16.1&quot;;	</span><br><span class="line">String regex=&quot;\\d&#123;1,3&#125;\\.\\d&#123;1,3&#125;\\.\\d&#123;1,2&#125;\\.\\d&#123;1&#125;&quot;;	//设置正则 \\d&#123;1，3&#125;表示该处出现1位或者3位数字</span><br><span class="line">if(str.matches(regex))</span><br><span class="line">&#123;</span><br><span class="line">	System.out.println(str.matches(regex));</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>判断是否为日期格式，若是则转换成Date型数据，本次验证年-月-日格式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">String str= &quot;2018-01-20&quot;;	//时间串</span><br><span class="line">String regex=&quot;\\d&#123;4&#125;-\\d&#123;2&#125;-\\d&#123;2&#125;&quot;;//设置时间正则 因为要使用SimpleDateFormat格式化日期所以必须使用\\d｛2｝</span><br><span class="line">if(str.matches(regex))</span><br><span class="line">&#123;</span><br><span class="line">	Date date2=new SimpleDateFormat(&quot;yyyy-MM-dd&quot;).parse(str);</span><br><span class="line">	</span><br><span class="line">	System.out.println(date2);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="2-5-Java-网络编程"><a href="#2-5-Java-网络编程" class="headerlink" title="2.5 Java 网络编程"></a>2.5 Java 网络编程</h2><p>java.net包提供了网络编程有关的开发工具类，并在此包中有以下的主要核心操作类</p>
+<ul>
+<li>ServerSocket类：是一个封装支持TCP（传输控制协议）的操作类，只要工作在服务器端，用于接受客户端请求；<br>| 方法名称 | 功能 |<br>|——–|——–|<br>| Public ServerSocket(int port) |开辟一个指定的端口监听，一般使用5000以上端口        |<br>| Public Socket accept()       | 服务器端接受客户端请求，通过Socket返回    |<br>| Public void close()  | 关闭服务器端           |</li>
+<li><p>Socket类：也是一个封装支持TCP协议的操作类，每一个Socket对象都表示一个客户端。<br>| 方法名称 | 功能 |<br>|——–|——–|<br>| Public Socket(String host,int port) |指定要连接的主机（IP地址）和端口     |<br>| Public OutputStream getOutputStream()     |取得指定客户端的输出对象，使用PrintStream打印流操作  |<br>| Public InputStream getInputStream()      |从指定的客户端读取操作，使用Scanner扫描流操作 |</p>
+</li>
+<li><p>网络开发的一个经典模型————ECHO<br>主要设计思路就是客户端发送任意信息到服务端，服务端需要将数据接受并且在前面加上ECHO后将数据返还给客户端。</p>
+</li>
+</ul>
+<p>服务端部分程序如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">ServerSocket serverSocket=new ServerSocket(9999);	//	定义连接接口</span><br><span class="line">Socket clinet=serverSocket.accept();    			//等待客户端连接</span><br><span class="line">//得到客户端输入数据以及向客户端输出数据的对象，利用扫描流接受，打印流输出</span><br><span class="line">Scanner scanner=new Scanner(clinet.getInputStream());</span><br><span class="line">PrintStream printStream=new PrintStream(clinet.getOutputStream());</span><br><span class="line">boolean flag=true;</span><br><span class="line">while(flag)</span><br><span class="line">&#123;</span><br><span class="line">	if(scanner.hasNext())&#123;		//判断是否有东西输入</span><br><span class="line">	String str  =scanner.next().trim();	//得到客户端输入数据并且去掉空格</span><br><span class="line">	if(str.equalsIgnoreCase(&quot;end&quot;))		//程序结束标记</span><br><span class="line">	&#123;</span><br><span class="line">		printStream.println(&quot;输入已经结束&quot;);	</span><br><span class="line">		flag=false;					//推出循环</span><br><span class="line">		</span><br><span class="line">	&#125;else &#123;</span><br><span class="line">		printStream.println(&quot;echo&quot;+str);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">scanner.close();</span><br><span class="line">printStream.close();</span><br><span class="line">clinet.close();</span><br><span class="line">serverSocket.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>客户端程序：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">Socket client=new Socket(&quot;192.168.1.1&quot;, 9999); //	服务器端口和地址</span><br><span class="line">		Scanner input =new Scanner(System.in);  			//键盘输入数据</span><br><span class="line">		//得到客户端输入数据以及向客户端输出数据的对象，利用扫描流接受，打印流输出</span><br><span class="line">		Scanner scanner=new Scanner(client.getInputStream());</span><br><span class="line">		PrintStream out=new PrintStream(client.getOutputStream());</span><br><span class="line">		boolean flag=true;</span><br><span class="line">		while(flag)</span><br><span class="line">		&#123;</span><br><span class="line">			if(input.hasNext())&#123;		//判断键盘有无东西输入</span><br><span class="line">			String str  =scanner.next().trim();	//得到键盘输入数据并且去掉空</span><br><span class="line">			out.println(str);					//发送数据到服务器端</span><br><span class="line">			if(str.equalsIgnoreCase(&quot;end&quot;))		//程序结束标记</span><br><span class="line">			&#123;</span><br><span class="line">				flag=false;					//推出循环</span><br><span class="line">				</span><br><span class="line">			&#125;</span><br><span class="line">			if (scanner.hasNext()) &#123;		//判断服务器端是否有回应</span><br><span class="line">				</span><br><span class="line">				System.out.println(scanner.next());//输出回应数据</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		input.close();</span><br><span class="line">		scanner.close();</span><br><span class="line">		out.close();</span><br><span class="line">		client.close();</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure></p>
+<p>该程序简单的实现了客户端与服务端的链接，当客户端发送数据的时候，服务器端接收到数据并且在前面加上ECHO后发送到客户端，客户端接受到数据后再将数据显示输出，直到出现end为止。<br>注意：<br>ServerSocket主要用在TCP协议的服务器程序开发上，使用accept方法等待客户端连接，每一个连接的客户端都使用一个Socket。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+<div>
+    
+        
+    
+</div>
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/19/Blog/Java/Java学习与技术总结——（二）神奇的排序算法/" rel="next" title>
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/24/Blog/Java/Java学习与技术总结——（四）类集框架/" rel="prev" title>
+                 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="Zero、">
+            
+              <p class="site-author-name" itemprop="name">Zero、</p>
+              <div class="site-description motion-element" itemprop="description"></div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives">
+                
+                    <span class="site-state-item-count">59</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                      <a href="/categories/">
+                    
+                  
+                    
+                    
+                      
+                    
+                    <span class="site-state-item-count">1</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/kilotwo" title="GitHub &rarr; https://github.com/kilotwo" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-Date类"><span class="nav-number">1.</span> <span class="nav-text">2.2 Date类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-Arrays-类"><span class="nav-number">2.</span> <span class="nav-text">2.3 Arrays 类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-正则表达式"><span class="nav-number">3.</span> <span class="nav-text">2.4 正则表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-1-正则标记"><span class="nav-number">3.1.</span> <span class="nav-text">2.4.1 正则标记</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-2-String中的正则"><span class="nav-number">3.2.</span> <span class="nav-text">2.4.2 String中的正则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-Java-网络编程"><span class="nav-number">4.</span> <span class="nav-text">2.5 Java 网络编程</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zero、</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+    <span title="站点总字数">332k</span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    
+    <span title="站点阅读时长">5:02</span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="post-meta-divider">|</span>
+  
+
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    
+    
+  
+  <script color="0,0,0" opacity="0.5" zindex="-1" count="99" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/utils.js?v=7.1.0"></script>
+
+  <script src="/js/motion.js?v=7.1.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/affix.js?v=7.1.0"></script>
+
+  <script src="/js/schemes/pisces.js?v=7.1.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.1.0"></script>
+<script src="/js/post-details.js?v=7.1.0"></script>
+
+
+
+  
+
+
+  <script src="/js/next-boot.js?v=7.1.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: ture,
+    appId: 'jNfDrH5MBW35Ejng6bgh05G8-gzGzoHsz',
+    appKey: 'YqVyGC0hIm6TEhKbgktVrkcN',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: '' || 'zh-cn'
+  });
+</script>
+
+
+
+
+  
+
+
+  
+  <script>
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url).replace(/\/{2,}/g, '/');
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x"></i></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x"></i></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/love.js"></script>
+
+</body>
+</html>
