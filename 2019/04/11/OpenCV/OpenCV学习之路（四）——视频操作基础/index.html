@@ -414,6 +414,19 @@
           
             
             
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/04/11/OpenCV/OpenCV学习之路（四）——视频操作基础/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/04/11/OpenCV/OpenCV学习之路（四）——视频操作基础/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
           
 
           
@@ -543,8 +556,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/04/11/OpenCV/OpenCV学习之路（七）——角点检测/" rel="next" title="OpenCV学习之路(七)——角点检测">
-                <i class="fa fa-chevron-left"></i> OpenCV学习之路(七)——角点检测
+              <a href="/2019/04/11/OpenCV/OpenCV学习之路（六）——对象检测与跟踪(基于颜色)/" rel="next" title="OpenCV学习之路(六)——对象检测与跟踪（基于颜色）">
+                <i class="fa fa-chevron-left"></i> OpenCV学习之路(六)——对象检测与跟踪（基于颜色）
               </a>
             
           </div>
@@ -553,8 +566,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/04/11/OpenCV/OpenCV学习之路（六）——对象检测与跟踪(基于颜色)/" rel="prev" title="OpenCV学习之路(六)——对象检测与跟踪（基于颜色）">
-                OpenCV学习之路(六)——对象检测与跟踪（基于颜色） <i class="fa fa-chevron-right"></i>
+              <a href="/2019/04/11/OpenCV/OpenCV学习之路（八）——光流追踪/" rel="prev" title="OpenCV学习之路(八)——光流跟踪">
+                OpenCV学习之路(八)——光流跟踪 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -576,6 +589,10 @@
 
           </div>
           
+
+  
+    <div class="comments" id="comments">
+    </div>
 
   
 
@@ -896,6 +913,36 @@
   
 
   
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unjkp.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'jNfDrH5MBW35Ejng6bgh05G8-gzGzoHsz',
+    appKey: 'YqVyGC0hIm6TEhKbgktVrkcN',
+    placeholder: '欢迎交流讨论',
+    avatar: 'wavatar',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false,
+    lang: '' || 'zh-cn'
+  });
+</script>
+
+
 
 
   
